@@ -1,0 +1,1 @@
+python %~dp0manage.py migrate --settings=gademia.settings.development

@@ -1,1 +1,1 @@
-python %~dp0manage.py migrate --settings=gademia.settings.development
+python %~dp0manage.py migrate --settings=Assembly.settings.development

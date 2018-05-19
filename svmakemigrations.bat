@@ -1,1 +1,1 @@
-python %~dp0manage.py makemigrations --settings=gademia.settings.development
+python %~dp0manage.py makemigrations --settings=Assembly.settings.development

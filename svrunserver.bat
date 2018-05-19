@@ -1,1 +1,1 @@
-python %~dp0manage.py runserver --settings=gademia.settings.development
+python %~dp0manage.py runserver --settings=Assembly.settings.development

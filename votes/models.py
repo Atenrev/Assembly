@@ -21,7 +21,7 @@ class Proposal(models.Model):
         return str(self.title)
 
     title = models.CharField(max_length=100, blank=False)
-    image = models.ImageField(max_length=2048, upload_to=generate_filename,
+    image = models.ImageField(upload_to=generate_filename,
                               blank=True)
     description = models.TextField(max_length=5000, blank=False)
     close_date = models.DateField(blank=True)
@@ -38,15 +38,19 @@ class Comment(models.Model):
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
     nest_comment = models.ForeignKey('self', on_delete=models.CASCADE,
-                                     blank=True)
-
+                                     null=True, blank=True)
 
 class UserProposalPhaseVote(models.Model):
     phase = models.ForeignKey(Phase, on_delete=models.CASCADE)
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
+class ProposalPhaseVote(models.Model):
+    phase = models.ForeignKey(Phase, on_delete=models.CASCADE)
+    proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE)
     option = models.BooleanField(default=True)
     unique_id = models.CharField(max_length=200)
+    identifier = models.CharField(max_length=200)
     timestamp = models.DateTimeField(auto_now_add=True)
     salt = models.CharField(max_length=100)
 

@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='userproposalphasevote',
             name='timestamp',
-            field=models.IntegerField(default=votes.models.UserProposalPhaseVote.get_timestamp),
+            field=models.DateTimeField(),
         ),
         migrations.AlterField(
             model_name='userproposalphasevote',

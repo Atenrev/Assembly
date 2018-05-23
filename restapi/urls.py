@@ -1,11 +1,17 @@
 from django.urls import path
-from .views import * 
+from .views import *
 
 urlpatterns = [
-    path('proposals/', ProposalView.as_view()),
-    path('proposals/most-debated', MostDebatedProposalView.as_view()),
-    path('proposals/most-voted', MostVotedProposalView.as_view()),
-    path('proposals/debating', DebateProposalView.as_view()),
-    path('proposals/voting', VoteProposalView.as_view()),
-    path('proposals/reviewing', ReviewProposalView.as_view()),
+    path('citizen/', CitizenView.as_view(), name='citizen_create_list'),
+    path('citizen/<user__username>', SingleCitizenView.as_view(), name='citizen_record'),
+    path('proposal/', ProposalView.as_view(), name='proposal_create_list'),
+    path('proposal/<int:pk>', SingleProposalView.as_view(), name='proposal_record'),
+    path('proposal/most-debated/', MostDebatedProposalView.as_view(), name='most_debated_proposal'),
+    path('proposal/most-voted/', MostVotedProposalView.as_view(), name='most_voted_proposal'),
+    path('proposal/debating/', DebateProposalView.as_view(), name='debating_proposal'),
+    path('proposal/voting/', VoteProposalView.as_view(), name='voting_proposal'),
+    path('proposal/reviewing/', ReviewProposalView.as_view(), name='reviewing_proposal'),
+    path('proposal/voting/vote', ProposalReviewVoteView.as_view(), name='voting_vote_proposal'),
+    path('proposal/<int:proposal>/comment/', CommentView.as_view(), name='proposal_comment'),
+    path('proposal/<int:proposal>/comment/nested/<int:comment>', CommentNestedView.as_view(), name='proposal_comment_nested'),
 ]

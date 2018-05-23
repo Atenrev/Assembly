@@ -15,7 +15,7 @@ class Proposal(models.Model):
     def generate_filename(self, filename):
         ext = filename.split('.')[-1]
         finalname = f'{uuid.uuid4().hex}.{ext}'
-        return f'media/proposal/{finalname}'
+        return f'proposal/{finalname}'
 
     def __str__(self):
         return str(self.title)

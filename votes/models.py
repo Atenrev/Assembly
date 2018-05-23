@@ -40,10 +40,12 @@ class Comment(models.Model):
     nest_comment = models.ForeignKey('self', on_delete=models.CASCADE,
                                      null=True, blank=True)
 
+
 class UserProposalPhaseVote(models.Model):
     phase = models.ForeignKey(Phase, on_delete=models.CASCADE)
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE)
     user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+
 
 class ProposalPhaseVote(models.Model):
     phase = models.ForeignKey(Phase, on_delete=models.CASCADE)

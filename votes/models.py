@@ -52,7 +52,7 @@ class ProposalPhaseVote(models.Model):
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE)
     option = models.BooleanField(default=True)
     unique_id = models.CharField(max_length=200)
-    identifier = models.CharField(max_length=200)
+    identifier = models.CharField(max_length=200, unique=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     salt = models.CharField(max_length=100)
 

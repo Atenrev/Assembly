@@ -1,5 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from django.db.models import Count
 
 from .permissions import *
@@ -8,6 +10,7 @@ from citizens.models import *
 
 from votes.serializers import *
 from votes.models import Proposal, Comment, UserProposalPhaseVote
+from votes.controller import *
 
 
 """ User Endpoints """
@@ -16,6 +19,8 @@ from votes.models import Proposal, Comment, UserProposalPhaseVote
 class CreateCitizenView(generics.CreateAPIView):
     queryset = Profile.objects.all()
     serializer_class = CitizenSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
 class SingleCitizenView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
@@ -30,6 +35,8 @@ class SingleCitizenView(generics.RetrieveUpdateDestroyAPIView):
 class ProposalView(generics.ListAPIView):
     queryset = Proposal.objects.all()
     serializer_class = ProposalSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
 
 class CreateProposalView(generics.CreateAPIView):
@@ -41,33 +48,45 @@ class CreateProposalView(generics.CreateAPIView):
 class SingleProposalView(generics.RetrieveAPIView):
     queryset = Proposal.objects.all()
     serializer_class = ProposalSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
 
 class MostDebatedProposalView(generics.ListAPIView):
     queryset = Proposal.objects.filter(phase__title__iexact='debate').annotate(
         comment_count=Count('comment')).order_by('-comment_count')
     serializer_class = ProposalSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
 
 class MostVotedProposalView(generics.ListAPIView):
     queryset = Proposal.objects.filter(phase__title__iexact='vote').annotate(
         votes_count=Count('proposalphasevote')).order_by('-votes_count')
     serializer_class = ProposalSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
 
 class DebateProposalView(generics.ListAPIView):
     queryset = Proposal.objects.filter(phase__title__iexact='debate')
     serializer_class = ProposalSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
 
 class VoteProposalView(generics.ListAPIView):
     queryset = Proposal.objects.filter(phase__title__iexact='vote')
     serializer_class = ProposalSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
 
 class ReviewProposalView(generics.ListAPIView):
     queryset = Proposal.objects.filter(phase__title__iexact='review')
     serializer_class = ProposalSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
 
 """ Comment Endpoints """
@@ -75,6 +94,8 @@ class ReviewProposalView(generics.ListAPIView):
 
 class CommentView(generics.ListAPIView):
     serializer_class = CommentSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
     def get_queryset(self):
         proposal = self.kwargs['proposal']
@@ -92,6 +113,8 @@ class CreateCommentView(generics.CreateAPIView):
 
 class CommentNestedView(generics.ListAPIView):
     serializer_class = CommentSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
     def get_queryset(self):
         proposal = self.kwargs['proposal']
@@ -100,6 +123,18 @@ class CommentNestedView(generics.ListAPIView):
 
 
 """ Vote Endpoints """
+
+
+class CreateProposalVotingVoteView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, format=None):
+        message = { 'detail' : 'Method \"GET\" not allowed.'}
+        return Response(message)
+
+    def post(self, request, format=None):
+        r = make_vote(request.data)
+        return Response({'hash' : r})
 
 
 class ProposalReviewVoteView(generics.CreateAPIView):

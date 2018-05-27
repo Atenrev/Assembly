@@ -17,7 +17,9 @@ urlpatterns = [
     path('proposal/debating/', DebateProposalView.as_view(), name='debating_proposal'),
     path('proposal/voting/', VoteProposalView.as_view(), name='voting_proposal'),
     path('proposal/reviewing/', ReviewProposalView.as_view(), name='reviewing_proposal'),
-    path('proposal/voting/vote', ProposalReviewVoteView.as_view(), name='voting_vote_proposal'),
+    # Votes CreateProposalVotingVoteView
+    path('proposal/reviewing/vote', ProposalReviewVoteView.as_view(), name='reviewing_vote_proposal'),
+    path('proposal/voting/vote', CreateProposalVotingVoteView.as_view(), name='voting_vote_proposal'),
     # Comments
     path('proposal/<int:proposal>/comment/', CommentView.as_view(), name='proposal_comment'),
     path('proposal/<int:proposal>/create-comment/', CreateCommentView.as_view(), name='proposal_comment'),

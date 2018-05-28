@@ -133,9 +133,15 @@ class CreateProposalVotingVoteView(APIView):
         return Response(message)
 
     def post(self, request, format=None):
-        r = make_vote(request.data)
-        return Response({'hash' : r})
-
+        try:
+            r = make_vote(request.user, request.data["phase"], request.data["proposal"],
+                request.data["option"], request.data["user_pw"])
+        except Exception as e:
+            return Response({ 'error' : f'Invalid vote, missing fields: {e}' })
+        if 'hash' in r:
+            return Response({ 'hash' : r['hash'], 'user' : str(request.user) })
+        else:
+            return Response({ 'error' : r['error'] })
 
 class ProposalReviewVoteView(generics.CreateAPIView):
     serializer_class = ProposalReviewVoteSerializer

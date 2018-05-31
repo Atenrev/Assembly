@@ -133,8 +133,11 @@ class CreateProposalVotingVoteView(APIView):
         return Response(message)
 
     def post(self, request, format=None):
+        phase = request.data["phase"]
+        if phase != 'vote':
+            return Response({ 'error' : 'Invalid format: Phase not vote.' })
         try:
-            r = make_vote(request.user, request.data["phase"], request.data["proposal"],
+            r = make_vote(request.user, phase, request.data["proposal"],
                 request.data["option"], request.data["user_pw"])
         except Exception as e:
             return Response({ 'error' : f'Invalid vote, missing fields: {e}' })

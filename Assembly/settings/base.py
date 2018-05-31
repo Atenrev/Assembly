@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'rest_framework',
     'rest_framework.authtoken',
     'citizens',
@@ -88,6 +89,11 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# SCHEDULED JOBS
+CRONJOBS = [
+    ('*/1 * * * *', 'Assembly.votes.tasks.my_scheduled_job')
+]
 
 
 # Password validation

@@ -8,11 +8,11 @@ from .models import ProposalPhaseVote, UserProposalPhaseVote, Phase, Proposal
 
 
 def make_vote(user, phase, proposal, option, user_pw):
-    # TODO: Save the vote to database
+    # TODO: Compare user password
     timestamp = str(int(time.time()))
 
     if not isinstance(option, bool):
-        return { 'error' : f'Invalid format: Option not bool.' }
+        return { 'error' : 'Invalid format: Option not bool.' }
 
     try:
         phase = Phase.objects.get(slug=phase)

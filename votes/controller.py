@@ -8,7 +8,7 @@ from .models import ProposalPhaseVote, UserProposalPhaseVote, Phase, Proposal
 
 
 def make_vote(user, phase, proposal, option, user_pw):
-    # TODO: Compare user password
+    # TODO: Compare user password and check that the target proposal is in phase
     timestamp = str(int(time.time()))
 
     if not isinstance(option, bool):

@@ -31,7 +31,7 @@ class Proposal(models.Model):
 
 class Comment(models.Model):
     def __str__(self):
-        return f"{self.proposal} - {self.id}"
+        return f"{self.proposal} - {self.message}"
 
     timestamp = models.DateTimeField(auto_now_add=True, blank=False)
     message = models.TextField(max_length=2000, blank=False)

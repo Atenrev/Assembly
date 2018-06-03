@@ -129,6 +129,13 @@ class CommentNestedView(generics.ListAPIView):
         return Comment.objects.filter(proposal__id=proposal, nest_comment__id=comment)
 
 
+class UserCommentVote(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ProposalReviewVoteSerializer
+    # TODO: permission to check that proposal is on debate phase
+    permission_classes = (IsAuthenticated,)
+    queryset = UserCommentVote.objects.all()
+
+
 """ Vote Endpoints """
 
 

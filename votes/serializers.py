@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 
 from citizens.models import Profile
-from .models import Proposal, Comment, UserProposalPhaseVote
+from .models import Proposal, Comment, UserProposalPhaseVote, UserCommentVote
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -40,10 +40,24 @@ class CitizenSerializer(serializers.ModelSerializer):
 
 class ProposalSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
+    comment_count = serializers.SerializerMethodField()
+    review_votes_count = serializers.SerializerMethodField()
+    vote_votes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Proposal
-        fields = ("id", "title", "image", "description", "phase", "close_date", "user")
+        fields = ("id", "title", "image", "description", "phase", "close_date",
+            "user", "comment_count", "review_votes_count", "vote_votes_count")
+
+
+    def get_comment_count(self, proposal):
+        return Comment.objects.filter(proposal=proposal).count()
+
+    def get_review_votes_count(self, proposal):
+        return UserProposalPhaseVote.objects.filter(proposal=proposal,phase="review").count()
+
+    def get_vote_votes_count(self, proposal):
+        return UserProposalPhaseVote.objects.filter(proposal=proposal,phase="vote").count()
 
 
 class ProposalReviewVoteSerializer(serializers.ModelSerializer):
@@ -55,6 +69,12 @@ class ProposalReviewVoteSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    votes_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
-        fields = ("id", "message", "proposal", "user", "nest_comment")
+        fields = ("id", "message", "proposal", "user", "nest_comment", "votes_count")
+
+
+    def get_votes_count(self, comment):
+        return UserCommentVote.objects.filter(comment=comment).count()

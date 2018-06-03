@@ -49,8 +49,13 @@ urlpatterns = [
     path(
         "proposals/<int:proposal>/create-comment",
         CreateCommentView.as_view(),
-        name="proposal_comment",
+        name="create_proposal_comment",
     ),
+    path(
+        "proposals/<int:proposal>/vote-comment",
+        UserCommentVote.as_view(),
+        name="vote_proposal_comment",
+    )
     path(
         "proposals/<int:proposal>/nested-comment/<int:comment>",
         CommentNestedView.as_view(),

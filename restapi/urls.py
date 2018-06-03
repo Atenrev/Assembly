@@ -9,13 +9,9 @@ urlpatterns = [
         rest_framework_views.obtain_auth_token,
         name="api_get_auth_token",
     ),
-
     # Citizens
     path("citizen/create", CreateCitizenView.as_view(), name="citizen_create"),
-    path(
-        "citizen/<user__username>", SingleCitizenView.as_view(), name="citizen_record"
-    ),
-
+    path("citizen/<user__username>", SingleCitizenView.as_view(), name="citizen_record"),
     # Proposals
     path("proposals", ProposalView.as_view(), name="proposal_create_list"),
     path("proposals/create", CreateProposalView.as_view(), name="proposal_create_list"),
@@ -32,10 +28,7 @@ urlpatterns = [
     ),
     path("proposals/debating", DebateProposalView.as_view(), name="debating_proposal"),
     path("proposals/voting", VoteProposalView.as_view(), name="voting_proposal"),
-    path(
-        "proposals/reviewing", ReviewProposalView.as_view(), name="reviewing_proposal"
-    ),
-
+    path("proposals/reviewing", ReviewProposalView.as_view(), name="reviewing_proposal"),
     # Votes CreateProposalVotingVoteView
     path(
         "proposals/reviewing/vote",
@@ -47,7 +40,6 @@ urlpatterns = [
         CreateProposalVotingVoteView.as_view(),
         name="voting_vote_proposal",
     ),
-
     # Comments
     path(
         "proposals/<int:proposal>/comments",

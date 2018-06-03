@@ -22,10 +22,11 @@ class CreateCitizenView(generics.CreateAPIView):
     authentication_classes = ()
     permission_classes = ()
 
+
 class SingleCitizenView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
     permission_classes = (IsAuthenticated, IsOwner)
-    lookup_field = 'user__username'
+    lookup_field = "user__username"
     serializer_class = CitizenSerializer
 
 
@@ -53,37 +54,43 @@ class SingleProposalView(generics.RetrieveAPIView):
 
 
 class MostDebatedProposalView(generics.ListAPIView):
-    queryset = Proposal.objects.filter(phase__title__iexact='debate').annotate(
-        comment_count=Count('comment')).order_by('-comment_count')
+    queryset = (
+        Proposal.objects.filter(phase__title__iexact="debate")
+        .annotate(comment_count=Count("comment"))
+        .order_by("-comment_count")
+    )
     serializer_class = ProposalSerializer
     authentication_classes = ()
     permission_classes = ()
 
 
 class MostVotedProposalView(generics.ListAPIView):
-    queryset = Proposal.objects.filter(phase__title__iexact='vote').annotate(
-        votes_count=Count('proposalphasevote')).order_by('-votes_count')
+    queryset = (
+        Proposal.objects.filter(phase__title__iexact="vote")
+        .annotate(votes_count=Count("proposalphasevote"))
+        .order_by("-votes_count")
+    )
     serializer_class = ProposalSerializer
     authentication_classes = ()
     permission_classes = ()
 
 
 class DebateProposalView(generics.ListAPIView):
-    queryset = Proposal.objects.filter(phase__title__iexact='debate')
+    queryset = Proposal.objects.filter(phase__title__iexact="debate")
     serializer_class = ProposalSerializer
     authentication_classes = ()
     permission_classes = ()
 
 
 class VoteProposalView(generics.ListAPIView):
-    queryset = Proposal.objects.filter(phase__title__iexact='vote')
+    queryset = Proposal.objects.filter(phase__title__iexact="vote")
     serializer_class = ProposalSerializer
     authentication_classes = ()
     permission_classes = ()
 
 
 class ReviewProposalView(generics.ListAPIView):
-    queryset = Proposal.objects.filter(phase__title__iexact='review')
+    queryset = Proposal.objects.filter(phase__title__iexact="review")
     serializer_class = ProposalSerializer
     authentication_classes = ()
     permission_classes = ()
@@ -98,7 +105,7 @@ class CommentView(generics.ListAPIView):
     permission_classes = ()
 
     def get_queryset(self):
-        proposal = self.kwargs['proposal']
+        proposal = self.kwargs["proposal"]
         return Comment.objects.filter(proposal__id=proposal)
 
 
@@ -107,7 +114,7 @@ class CreateCommentView(generics.CreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
-        proposal = self.kwargs['proposal']
+        proposal = self.kwargs["proposal"]
         return Comment.objects.filter(proposal__id=proposal)
 
 
@@ -117,8 +124,8 @@ class CommentNestedView(generics.ListAPIView):
     permission_classes = ()
 
     def get_queryset(self):
-        proposal = self.kwargs['proposal']
-        comment = self.kwargs['comment']
+        proposal = self.kwargs["proposal"]
+        comment = self.kwargs["comment"]
         return Comment.objects.filter(proposal__id=proposal, nest_comment__id=comment)
 
 
@@ -129,22 +136,28 @@ class CreateProposalVotingVoteView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
-        message = { 'detail' : 'Method \"GET\" not allowed.'}
+        message = {"detail": 'Method "GET" not allowed.'}
         return Response(message)
 
     def post(self, request, format=None):
         phase = request.data["phase"]
-        if phase != 'vote':
-            return Response({ 'error' : 'Invalid format: Phase not vote.' })
+        if phase != "vote":
+            return Response({"error": "Invalid format: Phase not vote."})
         try:
-            r = make_vote(request.user, phase, request.data["proposal"],
-                request.data["option"], request.data["user_pw"])
+            r = make_vote(
+                request.user,
+                phase,
+                request.data["proposal"],
+                request.data["option"],
+                request.data["user_pw"],
+            )
         except Exception as e:
-            return Response({ 'error' : f'Invalid vote, missing fields: {e}' })
-        if 'hash' in r:
-            return Response({ 'hash' : r['hash'], 'user' : str(request.user) })
+            return Response({"error": f"Invalid vote, missing fields: {e}"})
+        if "hash" in r:
+            return Response({"hash": r["hash"], "user": str(request.user)})
         else:
-            return Response({ 'error' : r['error'] })
+            return Response({"error": r["error"]})
+
 
 class ProposalReviewVoteView(generics.CreateAPIView):
     serializer_class = ProposalReviewVoteSerializer

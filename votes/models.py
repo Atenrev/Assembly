@@ -1,10 +1,10 @@
-import uuid
+from uuid import uuid4
+from datetime import date, timedelta
 from django.db import models
 from django.contrib.auth.models import User
-from citizens.models import Profile
 
 
-class Phase (models.Model):
+class Phase(models.Model):
     def __str__(self):
         return str(self.title)
 
@@ -14,32 +14,32 @@ class Phase (models.Model):
 
 class Proposal(models.Model):
     def generate_filename(self, filename):
-        ext = filename.split('.')[-1]
-        finalname = f'{uuid.uuid4().hex}.{ext}'
-        return f'proposal/{finalname}'
+        ext = filename.split(".")[-1]
+        finalname = f"{uuid4().hex}.{ext}"
+        return f"proposal/{finalname}"
 
     def __str__(self):
         return str(self.title)
 
     title = models.CharField(max_length=100, blank=False)
-    image = models.ImageField(upload_to=generate_filename,
-                              blank=True)
+    image = models.ImageField(upload_to=generate_filename, blank=True)
     description = models.TextField(max_length=5000, blank=False)
-    close_date = models.DateField(blank=True)
+    close_date = models.DateField(blank=True, default=date.today() + timedelta(days=5))
     phase = models.ForeignKey(Phase, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Comment(models.Model):
     def __str__(self):
-        return f'{self.proposal} - {self.id}'
+        return f"{self.proposal} - {self.id}"
 
     timestamp = models.DateTimeField(auto_now_add=True, blank=False)
     message = models.TextField(max_length=2000, blank=False)
     proposal = models.ForeignKey(Proposal, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    nest_comment = models.ForeignKey('self', on_delete=models.CASCADE,
-                                     null=True, blank=True)
+    nest_comment = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True
+    )
 
 
 class UserProposalPhaseVote(models.Model):
@@ -48,7 +48,7 @@ class UserProposalPhaseVote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = (('phase', 'proposal', 'user'),)
+        unique_together = ("phase", "proposal", "user")
 
 
 class ProposalPhaseVote(models.Model):

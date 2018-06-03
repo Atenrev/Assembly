@@ -1,4 +1,4 @@
-import uuid
+from uuid import uuid4
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -7,11 +7,11 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 
-class Profile (models.Model):
+class Profile(models.Model):
     def generate_filename(self, filename):
-        ext = filename.split('.')[-1]
-        finalname = f'{uuid.uuid4().hex}.{ext}'
-        return f'media/proposal/{finalname}'
+        ext = filename.split(".")[-1]
+        finalname = f"{uuid4().hex}.{ext}"
+        return f"media/proposal/{finalname}"
 
     def __str__(self):
         return str(self.user)
@@ -22,6 +22,7 @@ class Profile (models.Model):
     country = models.CharField(max_length=50, blank=False)
     province = models.CharField(max_length=50, blank=False)
     city = models.CharField(max_length=50, blank=False)
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

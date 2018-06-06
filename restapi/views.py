@@ -42,7 +42,7 @@ class ProposalView(generics.ListAPIView):
 
 class CreateProposalView(generics.CreateAPIView):
     queryset = Proposal.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsUser)
     serializer_class = ProposalSerializer
 
 
@@ -109,9 +109,19 @@ class CommentView(generics.ListAPIView):
         return Comment.objects.filter(proposal__id=proposal)
 
 
+class MostVotedCommentView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    authentication_classes = ()
+    permission_classes = ()
+
+    def get_queryset(self):
+        proposal = self.kwargs["proposal"]
+        return Comment.objects.filter(proposal__id=proposal).annotate(comment_votes_count=Count("usercommentvote")).order_by("-comment_votes_count")
+
+
 class CreateCommentView(generics.CreateAPIView):
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsInDebate, IsUser)
 
     def get_queryset(self):
         proposal = self.kwargs["proposal"]
@@ -129,10 +139,9 @@ class CommentNestedView(generics.ListAPIView):
         return Comment.objects.filter(proposal__id=proposal, nest_comment__id=comment)
 
 
-class UserCommentVote(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ProposalReviewVoteSerializer
-    # TODO: permission to check that proposal is on debate phase
-    permission_classes = (IsAuthenticated,)
+class UserCommentVote(generics.CreateAPIView):
+    serializer_class = UserCommentVoteSerializer
+    permission_classes = (IsAuthenticated, IsUser)
     queryset = UserCommentVote.objects.all()
 
 
@@ -168,5 +177,20 @@ class CreateProposalVotingVoteView(APIView):
 
 class ProposalReviewVoteView(generics.CreateAPIView):
     serializer_class = ProposalReviewVoteSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsUser)
     queryset = UserProposalPhaseVote.objects.all()
+
+class DestroyReviewVoteView(generics.DestroyAPIView):
+    serializer_class = ProposalReviewVoteSerializer
+    permission_classes = (IsAuthenticated, IsOwner, IsInReview)
+    queryset = UserProposalPhaseVote.objects.all()
+
+
+class VotedUserProposalView(generics.ListAPIView):
+    serializer_class = ProposalReviewVoteSerializer
+    permission_classes = (IsAuthenticated, IsOwner)
+
+    def get_queryset(self):
+        user = self.request.user
+        phase = self.kwargs["phase"]
+        return UserProposalPhaseVote.objects.filter(phase=phase, user=user)

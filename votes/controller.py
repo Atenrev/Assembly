@@ -4,12 +4,15 @@ import uuid
 from hashlib import blake2b
 
 from django.db import IntegrityError
+from django.contrib.auth.hashers import make_password
 from .models import ProposalPhaseVote, UserProposalPhaseVote, Phase, Proposal
 
 
 def make_vote(user, phase, proposal, option, user_pw):
-    # TODO: Compare user password and check that the target proposal is in phase
     timestamp = str(int(time.time()))
+    password = make_password(user_pw,
+        hasher=password_in_database[0],
+        salt=password_in_database[-2])
 
     if not isinstance(option, bool):
         return {"error": "Invalid format: Option not bool."}
@@ -19,6 +22,9 @@ def make_vote(user, phase, proposal, option, user_pw):
         proposal = Proposal.objects.get(pk=proposal)
     except Exception as e:
         return {"error": f"Invalid format: {e}"}
+
+    if proposal.phase != phase:
+        return {"error": "Input phase does not correspond with the proposal's phase."}
 
     try:
         salt = os.urandom(blake2b.SALT_SIZE)
@@ -31,7 +37,7 @@ def make_vote(user, phase, proposal, option, user_pw):
         anonvote = ProposalPhaseVote(
             phase=phase,
             proposal=proposal,
-            user_pw=user_pw,
+            user_pw=password,
             option=option,
             hash=digest,
             identifier=uuid.uuid4().hex,

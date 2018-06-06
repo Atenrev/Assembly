@@ -15,7 +15,8 @@ urlpatterns = [
     # Proposals
     path("proposals", ProposalView.as_view(), name="proposal_create_list"),
     path("proposals/create", CreateProposalView.as_view(), name="proposal_create_list"),
-    path("proposals/<int:pk>", SingleProposalView.as_view(), name="proposal_record"),
+    path("proposals/<int:proposal>", SingleProposalView.as_view(), name="proposal_record"),
+    path("proposals/voted-user-proposal/<phase>", VotedUserProposalView.as_view(), name="voted_user_proposal"),
     path(
         "proposals/most-debated",
         MostDebatedProposalView.as_view(),
@@ -36,6 +37,11 @@ urlpatterns = [
         name="reviewing_vote_proposal",
     ),
     path(
+        "proposals/reviewing/destroy-vote/<int:pk>",
+        DestroyReviewVoteView.as_view(),
+        name="destroy_reviewing_vote_proposal",
+    ),
+    path(
         "proposals/voting/vote",
         CreateProposalVotingVoteView.as_view(),
         name="voting_vote_proposal",
@@ -44,6 +50,11 @@ urlpatterns = [
     path(
         "proposals/<int:proposal>/comments",
         CommentView.as_view(),
+        name="proposal_comment",
+    ),
+    path(
+        "proposals/<int:proposal>/most-voted-comments",
+        MostVotedCommentView.as_view(),
         name="proposal_comment",
     ),
     path(

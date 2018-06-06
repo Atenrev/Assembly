@@ -69,6 +69,7 @@ class ProposalReviewVoteSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     votes_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -78,3 +79,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_votes_count(self, comment):
         return UserCommentVote.objects.filter(comment=comment).count()
+
+
+class UserCommentVoteSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = UserCommentVote
+        fields = ("id", "user", "comment")

@@ -8,7 +8,7 @@ phases = dict(zip([p.title for p in phases], phases))
 
 
 def check_proposals():
-    min_review = floor(len(Profile.objects.all()) / 2)
+    min_review = floor(len(Profile.objects.all()) / 4)
     proposals = Proposal.objects.filter(close_date=date.today()).exclude(
         phase__title__endswith="ed"
     )

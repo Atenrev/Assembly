@@ -3,13 +3,12 @@ from rest_framework.authtoken import views as rest_framework_views
 from .views import *
 
 urlpatterns = [
-    # Auth
+    # Citizens
     path(
-        "get-auth-token",
+        "citizen/login",
         rest_framework_views.obtain_auth_token,
         name="api_get_auth_token",
     ),
-    # Citizens
     path("citizen/create", CreateCitizenView.as_view(), name="citizen_create"),
     path("citizen/<user__username>", SingleCitizenView.as_view(), name="citizen_record"),
     # Proposals

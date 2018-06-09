@@ -18,14 +18,17 @@ class Proposal(models.Model):
         finalname = f"{uuid4().hex}.{ext}"
         return f"proposal/{finalname}"
 
+    def default_close_date():
+        return date.today() + timedelta(days=5)
+
     def __str__(self):
         return str(self.title)
 
     title = models.CharField(max_length=100, blank=False)
     image = models.ImageField(upload_to=generate_filename, blank=True)
     description = models.TextField(max_length=5000, blank=False)
-    close_date = models.DateField(blank=True, default=date.today() + timedelta(days=5))
-    phase = models.ForeignKey(Phase, on_delete=models.CASCADE)
+    close_date = models.DateField(default=default_close_date, blank=False)
+    phase = models.ForeignKey(Phase, on_delete=models.CASCADE, default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 

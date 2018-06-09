@@ -10,7 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("username", "email", "password", "first_name", "last_name")
+        fields = ("id", "username", "email", "password", "first_name", "last_name")
 
 
 class CitizenSerializer(serializers.ModelSerializer):
@@ -55,7 +55,7 @@ class ProposalSerializer(serializers.ModelSerializer):
             "vote_votes_count",
         )
 
-        read_only_fields = ("id", "phase", "close_date", "user")
+        read_only_fields = ("id", "phase", "close_date")
 
     def get_comment_count(self, proposal):
         return Comment.objects.filter(proposal=proposal).count()

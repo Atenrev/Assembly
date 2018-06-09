@@ -28,7 +28,7 @@ class Proposal(models.Model):
     image = models.ImageField(upload_to=generate_filename, blank=True)
     description = models.TextField(max_length=5000, blank=False)
     close_date = models.DateField(default=default_close_date, blank=False)
-    phase = models.ForeignKey(Phase, on_delete=models.CASCADE, default=0)
+    phase = models.ForeignKey(Phase, on_delete=models.CASCADE, default="review")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 

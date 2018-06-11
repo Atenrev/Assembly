@@ -10,6 +10,7 @@ from .models import ProposalPhaseVote, UserProposalPhaseVote, Phase, Proposal
 
 def make_vote(user, phase, proposal, option, user_pw):
     timestamp = str(int(time.time()))
+    password_in_database = user.password.split('$')
     password = make_password(user_pw,
         hasher=password_in_database[0],
         salt=password_in_database[-2])
@@ -28,7 +29,7 @@ def make_vote(user, phase, proposal, option, user_pw):
 
     try:
         salt = os.urandom(blake2b.SALT_SIZE)
-        msg = str(phase) + str(proposal) + str(option) + user_pw + timestamp
+        msg = str(phase) + str(proposal) + str(option) + password + timestamp
         hash = blake2b(salt=salt)
         hash.update(msg.encode("utf-8"))
         digest = hash.hexdigest()

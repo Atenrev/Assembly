@@ -9,10 +9,7 @@ class IsOwner(BasePermission):
 
 class IsUser(BasePermission):
     def has_permission(self, request, view):
-        if "user" in request.data:
-            return request.data["user"] == request.user.id
-        else:
-            return request.data["user_id"] == request.user.id
+        return request.data["user"] == request.user.id
 
 
 class IsInDebate(BasePermission):

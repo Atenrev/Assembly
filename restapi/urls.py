@@ -12,9 +12,9 @@ urlpatterns = [
     path("citizen/create", CreateCitizenView.as_view(), name="citizen_create"),
     path("citizen/<user__username>", SingleCitizenView.as_view(), name="citizen_record"),
     # Proposals
-    path("proposals", ProposalView.as_view(), name="proposal_create_list"),
+    path("proposals", ProposalView.as_view(), name="proposals"),
     path("proposals/create", CreateProposalView.as_view(), name="proposal_create_list"),
-    path("proposals/<int:proposal>", SingleProposalView.as_view(), name="proposal_record"),
+    path("proposals/<int:pk>", SingleProposalView.as_view(), name="proposal_record"),
     path("proposals/voted-user-proposal/<phase>", VotedUserProposalView.as_view(), name="voted_user_proposal"),
     path(
         "proposals/most-debated",

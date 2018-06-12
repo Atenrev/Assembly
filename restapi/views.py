@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -156,13 +156,18 @@ class CreateProposalVotingVoteView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, format=None):
-        message = {"detail": 'Method "GET" not allowed.'}
-        return Response(message)
+        return Response(
+            {"detail": 'Method "GET" not allowed.'},
+            status=status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
 
     def post(self, request, format=None):
         phase = request.data["phase"]
         if phase != "vote":
-            return Response({"error": "Invalid format: Phase not vote."})
+            return Response(
+                {"error": "Invalid format: Phase is not 'vote'."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         try:
             r = make_vote(
                 request.user,
@@ -172,11 +177,17 @@ class CreateProposalVotingVoteView(APIView):
                 request.data["user_pw"],
             )
         except Exception as e:
-            return Response({"error": f"Invalid vote, missing fields: {e}"})
+            return Response(
+                {"error": f"Invalid vote, missing fields: {e}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         if "hash" in r:
-            return Response({"hash": r["hash"], "user": str(request.user)})
+            return Response(
+                {"hash": r["hash"], "user": str(request.user)},
+                status=status.HTTP_201_CREATED,
+            )
         else:
-            return Response({"error": r["error"]})
+            return Response({"error": r["error"]}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProposalReviewVoteView(generics.CreateAPIView):

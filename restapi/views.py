@@ -116,7 +116,11 @@ class MostVotedCommentView(generics.ListAPIView):
 
     def get_queryset(self):
         proposal = self.kwargs["proposal"]
-        return Comment.objects.filter(proposal__id=proposal).annotate(comment_votes_count=Count("usercommentvote")).order_by("-comment_votes_count")
+        return (
+            Comment.objects.filter(proposal__id=proposal)
+            .annotate(comment_votes_count=Count("usercommentvote"))
+            .order_by("-comment_votes_count")
+        )
 
 
 class CreateCommentView(generics.CreateAPIView):
@@ -179,6 +183,7 @@ class ProposalReviewVoteView(generics.CreateAPIView):
     serializer_class = ProposalReviewVoteSerializer
     permission_classes = (IsAuthenticated, IsUser)
     queryset = UserProposalPhaseVote.objects.all()
+
 
 class DestroyReviewVoteView(generics.DestroyAPIView):
     serializer_class = ProposalReviewVoteSerializer

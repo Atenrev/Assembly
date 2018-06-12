@@ -10,10 +10,12 @@ from .models import ProposalPhaseVote, UserProposalPhaseVote, Phase, Proposal
 
 def make_vote(user, phase, proposal, option, user_pw):
     timestamp = str(int(time.time()))
-    password_in_database = user.password.split('$')
-    password = make_password(user_pw,
-        hasher=password_in_database[0],
-        salt=password_in_database[-2])
+    password_in_database = user.password.split("$")
+    password = make_password(
+        user_pw, hasher=password_in_database[0], salt=password_in_database[-2]
+    )
+
+    option = bool(option)
 
     if not isinstance(option, bool):
         return {"error": "Invalid format: Option not bool."}

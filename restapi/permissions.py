@@ -1,5 +1,4 @@
 from rest_framework.permissions import BasePermission
-from citizens.models import Profile
 
 
 class IsOwner(BasePermission):
@@ -9,7 +8,7 @@ class IsOwner(BasePermission):
 
 class IsUser(BasePermission):
     def has_permission(self, request, view):
-        return request.data["user"] == request.user.id
+        return int(request.data["user"]) == request.user.id
 
 
 class IsInDebate(BasePermission):
